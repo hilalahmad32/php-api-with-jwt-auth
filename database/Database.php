@@ -64,7 +64,7 @@ class Database
                 $sql .= " LIMIT $limit";
             }
             $query = $this->mysqli->query($sql);
-            if ($query->num_rows > 0) {
+            if ($query) {
                 $this->result = $query->fetch_all(MYSQLI_ASSOC);
                 return true;
             } else {
@@ -84,6 +84,9 @@ class Database
                 $arg[] = "$key = '{$val}'";
             }
             $sql = "UPDATE $table SET " . implode(', ', $arg);
+            if($where != null){
+                $sql .=" WHERE $where";
+            }
             if ($this->mysqli->query($sql)) {
                 array_push($this->result, true);
                 return true;
@@ -101,7 +104,7 @@ class Database
         if ($this->tableExist($table)) {
             $sql = "DELETE FROM $table";
             if ($where != null) {
-                $sql = " WHERE $where";
+                $sql .= " WHERE $where";
             }
             if ($this->mysqli->query($sql)) {
                 array_push($this->result, true);
